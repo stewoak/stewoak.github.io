@@ -84,6 +84,25 @@
           <a href="#about" data-i18n="nav_bio">Bio</a>
           <a href="#music" data-i18n="nav_music">Music & EP</a>
           <a href="#videos" data-i18n="nav_videos">Videos</a>
+          <div class="nav-dropdown" id="myStuffDropdown">
+            <button
+              type="button"
+              class="nav-dropdown-trigger"
+              id="myStuffBtn"
+              aria-expanded="false"
+            >
+              <span data-i18n="nav_mystuff">My Stuff</span>
+              <i data-lucide="chevron-down" class="nav-chevron"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="myStuffMenu">
+              <a href="web-projects.html" data-i18n="nav_web_projects"
+                >Web Projects</a
+              >
+              <a href="inspiration.html" data-i18n="nav_inspiration"
+                >Inspiration</a
+              >
+            </div>
+          </div>
           <a href="#contact" data-i18n="nav_contact">Contact</a>
         </nav>
 
@@ -541,6 +560,18 @@
           />
           <span class="brand-title">STEW OAK</span>
         </a>
+        <nav class="footer-links">
+          <a href="#about" data-i18n="nav_bio">Bio</a>
+          <a href="#music" data-i18n="nav_music">Music & EP</a>
+          <a href="#videos" data-i18n="nav_videos">Videos</a>
+          <a href="web-projects.html" data-i18n="nav_web_projects"
+            >Web Projects</a
+          >
+          <a href="inspiration.html" data-i18n="nav_inspiration"
+            >Inspiration</a
+          >
+          <a href="#contact" data-i18n="nav_contact">Contact</a>
+        </nav>
         <div class="footer-socials">
           <a
             href="https://open.spotify.com/artist/4tGni6VFhS9lafmh1QXMuF"
@@ -603,6 +634,12 @@
           nav_bio: "Bio",
           nav_music: "Music & EP",
           nav_videos: "Videos",
+          nav_mystuff: "Meine Sachen",
+          nav_web_projects: "Webprojekte",
+          nav_inspiration: "Inspiration",
+          nav_mystuff: "My Stuff",
+          nav_web_projects: "Web Projects",
+          nav_inspiration: "Inspiration",
           nav_contact: "Contact",
           hero_badge: "Independent Folk • Alternative Rock",
           hero_subtitle:
@@ -637,6 +674,9 @@
           nav_bio: "ביוגרפיה",
           nav_music: "מוזיקה ו-EP",
           nav_videos: "סרטונים",
+          nav_mystuff: "הדברים שלי",
+          nav_web_projects: "פרויקטים ברשת",
+          nav_inspiration: "השראה",
           nav_contact: "צור קשר",
           hero_badge: "פולק עצמאי • רוק אלטרנטיבי",
           hero_subtitle:
@@ -671,6 +711,9 @@
           nav_bio: "Bio",
           nav_music: "Musique & EP",
           nav_videos: "Vidéos",
+          nav_mystuff: "Mes Projets",
+          nav_web_projects: "Projets Web",
+          nav_inspiration: "Inspiration",
           nav_contact: "Contact",
           hero_badge: "Folk Indépendant • Rock Alternatif",
           hero_subtitle:
@@ -765,11 +808,23 @@
 
       const dropdown = document.getElementById("langDropdown");
       const btn = document.getElementById("langBtn");
+      const myStuffDropdown = document.getElementById("myStuffDropdown");
+      const myStuffBtn = document.getElementById("myStuffBtn");
 
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
+        if (myStuffDropdown) myStuffDropdown.classList.remove("open");
         dropdown.classList.toggle("open");
       });
+
+      if (myStuffBtn && myStuffDropdown) {
+        myStuffBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdown.classList.remove("open");
+          const isOpen = myStuffDropdown.classList.toggle("open");
+          myStuffBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+      }
 
       document.querySelectorAll(".lang-option").forEach((option) => {
         option.addEventListener("click", () => {
@@ -781,6 +836,10 @@
 
       window.addEventListener("click", () => {
         dropdown.classList.remove("open");
+        if (myStuffDropdown) {
+          myStuffDropdown.classList.remove("open");
+          if (myStuffBtn) myStuffBtn.setAttribute("aria-expanded", "false");
+        }
       });
 
       const savedLang = localStorage.getItem("stewoak_lang") || "en";
