@@ -66,7 +66,7 @@ body {
 }
 
 /* ==========================================================================
-   3. NAVIGATION BAR & DROPDOWNS
+   3. NAVIGATION BAR & DROPDOWN
    ========================================================================== */
 .navbar {
   position: sticky;
@@ -147,6 +147,7 @@ body {
 
 .nav-links > a:hover,
 .nav-dropdown-trigger:hover,
+.nav-dropdown-trigger.active,
 .nav-dropdown.open .nav-dropdown-trigger {
   color: var(--color-moss-400);
 }
@@ -209,73 +210,6 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-}
-
-.custom-lang-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.lang-btn {
-  background: var(--color-bg-800);
-  color: var(--color-sand-100);
-  border: 1px solid rgba(142, 179, 89, 0.3);
-  padding: 6px 14px;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.lang-btn:hover {
-  border-color: var(--color-moss-400);
-  background: var(--color-bg-700);
-}
-
-.lang-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: var(--color-bg-900);
-  border: 1px solid rgba(142, 179, 89, 0.2);
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  display: none;
-  z-index: 200;
-  min-width: 130px;
-}
-
-.custom-lang-dropdown.open .lang-menu {
-  display: block;
-}
-
-.lang-option {
-  padding: 10px 14px;
-  font-size: 0.8rem;
-  color: var(--color-sand-200);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.lang-option:hover {
-  background: var(--color-bg-700);
-  color: var(--color-moss-300);
-}
-
-.lang-option .flag {
-  font-size: 1rem;
 }
 
 .nav-socials {
@@ -699,198 +633,8 @@ body {
 }
 
 /* ==========================================================================
-   7. SITE FOOTER
+   7. SUBPAGES (WEB PROJECTS & INSPIRATION)
    ========================================================================== */
-.site-footer {
-  background: var(--color-bg-900);
-  border-top: 1px solid rgba(142, 179, 89, 0.15);
-  padding: 48px 24px;
-  margin-top: auto;
-}
-
-.footer-container {
-  max-width: 1152px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  text-align: center;
-}
-
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-}
-
-.footer-links a {
-  color: var(--color-sand-200);
-  text-decoration: none;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.footer-links a:hover {
-  color: var(--color-moss-400);
-}
-
-.footer-socials {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.footer-socials a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--color-bg-800);
-  color: var(--color-sand-200);
-  text-decoration: none;
-  border: 1px solid rgba(142, 179, 89, 0.15);
-  transition: all 0.3s ease;
-}
-
-.footer-socials a:hover {
-  color: var(--color-moss-400);
-  background: var(--color-bg-700);
-  border-color: rgba(142, 179, 89, 0.4);
-  transform: translateY(-2px);
-}
-
-.footer-socials a svg {
-  width: 20px;
-  height: 20px;
-}
-
-.copyright {
-  font-size: 0.8rem;
-  color: rgba(217, 203, 176, 0.6);
-  font-weight: 300;
-}
-
-/* ==========================================================================
-   8. MEDIA QUERIES (RESPONSIVE BREAKPOINTS)
-   ========================================================================== */
-
-/* TABLETS & MEDIUM SCREENS (min-width: 768px) */
-@media (min-width: 768px) {
-  .hero-title {
-    font-size: 5rem;
-  }
-  .grid-2-col {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* MOBILE FALLBACK (max-width: 768px) */
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-  .bio-card {
-    padding: 32px 24px;
-  }
-  .nav-container {
-    padding: 0 16px;
-    height: 70px;
-  }
-  .brand-logo {
-    width: 32px;
-    height: 32px;
-  }
-  .brand-title {
-    font-size: 1.1rem;
-  }
-  .nav-socials {
-    gap: 6px;
-  }
-  .nav-socials a {
-    width: 30px;
-    height: 30px;
-  }
-  .nav-socials a svg {
-    width: 14px;
-    height: 14px;
-  }
-  .lang-btn {
-    padding: 4px 10px;
-    font-size: 0.7rem;
-  }
-}
-
-/* DESKTOP BIO GRID & 3-COL MUSIC (min-width: 900px) */
-@media (min-width: 900px) {
-  .bio-card {
-    padding: 48px;
-  }
-  .bio-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: center;
-  }
-  .bio-image-wrapper {
-    aspect-ratio: 4 / 5;
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid-music {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 32px;
-  }
-  .hero-content {
-    margin-top: -30rem;
-  }
-  .hero-title {
-    font-size: 6rem;
-  }
-}
-
-/* RTL Layout Harmonies */
-[dir="rtl"] .brand {
-  flex-direction: row-reverse;
-}
-
-[dir="rtl"] .nav-links {
-  flex-direction: row-reverse;
-}
-
-[dir="rtl"] .nav-dropdown-menu {
-  left: auto;
-  right: 0;
-}
-
-[dir="rtl"] .card-header,
-[dir="rtl"] .card-footer {
-  text-align: right;
-}
-
-[dir="rtl"] .lang-menu {
-  right: auto;
-  left: 0;
-}
-
-/* ==========================================================================
-   SUBPAGES (WEB PROJECTS & INSPIRATION)
-   ========================================================================== */
-.nav-dropdown-trigger.active,
-.footer-links a.active {
-  color: var(--color-moss-400);
-}
-
 .subpage-hero {
   max-width: 1152px;
   margin: 0 auto;
@@ -987,18 +731,171 @@ body {
   color: rgba(217, 203, 176, 0.65);
 }
 
+/* ==========================================================================
+   8. SITE FOOTER
+   ========================================================================== */
+.site-footer {
+  background: var(--color-bg-900);
+  border-top: 1px solid rgba(142, 179, 89, 0.15);
+  padding: 48px 24px;
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1152px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: var(--color-sand-200);
+  text-decoration: none;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover,
+.footer-links a.active {
+  color: var(--color-moss-400);
+}
+
+.footer-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-bg-800);
+  color: var(--color-sand-200);
+  text-decoration: none;
+  border: 1px solid rgba(142, 179, 89, 0.15);
+  transition: all 0.3s ease;
+}
+
+.footer-socials a:hover {
+  color: var(--color-moss-400);
+  background: var(--color-bg-700);
+  border-color: rgba(142, 179, 89, 0.4);
+  transform: translateY(-2px);
+}
+
+.footer-socials a svg {
+  width: 20px;
+  height: 20px;
+}
+
+.copyright {
+  font-size: 0.8rem;
+  color: rgba(217, 203, 176, 0.6);
+  font-weight: 300;
+}
+
+/* ==========================================================================
+   9. MEDIA QUERIES (RESPONSIVE BREAKPOINTS)
+   ========================================================================== */
+
+/* TABLETS & MEDIUM SCREENS (min-width: 768px) */
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 5rem;
+  }
+  .grid-2-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* MOBILE FALLBACK (max-width: 768px) */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  .bio-card {
+    padding: 32px 24px;
+  }
+  .nav-container {
+    padding: 0 16px;
+    height: 70px;
+  }
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+  }
+  .brand-title {
+    font-size: 1.1rem;
+  }
+  .nav-socials {
+    gap: 6px;
+  }
+  .nav-socials a {
+    width: 30px;
+    height: 30px;
+  }
+  .nav-socials a svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* DESKTOP BIO & INSPIRATION GRIDS (min-width: 900px) */
 @media (min-width: 900px) {
+  .bio-card {
+    padding: 48px;
+  }
+  .bio-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .bio-image-wrapper {
+    aspect-ratio: 4 / 5;
+  }
   .inspiration-item {
     grid-template-columns: 1fr 1fr;
     gap: 44px;
     padding: 44px;
   }
-
   .inspiration-item.reverse .inspiration-text {
     order: 2;
   }
-
   .inspiration-item.reverse .inline-image-placeholder {
     order: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-music {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .hero-content {
+    margin-top: -30rem;
+  }
+  .hero-title {
+    font-size: 6rem;
   }
 }
