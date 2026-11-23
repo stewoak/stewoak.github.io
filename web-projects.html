@@ -27,6 +27,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
     <style>
+      html {
+        background-color: var(--color-bg-950);
+      }
+
+      body {
+        background-color: transparent;
+      }
+
       #algorithmicBg {
         position: fixed;
         inset: 0;
@@ -50,16 +58,27 @@
         z-index: 1;
       }
 
+      /* Wider container (+~18%) on large desktop screens */
+      .subpage-section.subpage-section-wide {
+        max-width: 1360px;
+      }
+
+      .editorial-card::after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
       .cloudinary-media-wrap {
         float: right;
-        width: 44%;
-        max-width: 420px;
-        margin: 4px 0 18px 28px;
+        width: 50%;
+        max-width: 540px;
+        margin: 6px 0 20px 32px;
         border-radius: 16px;
         overflow: hidden;
         background: var(--color-bg-900);
-        border: 1px solid rgba(142, 179, 89, 0.28);
-        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(142, 179, 89, 0.32);
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
       }
 
       .cloudinary-media-wrap video {
@@ -70,12 +89,12 @@
         object-fit: cover;
       }
 
-      @media (max-width: 768px) {
+      @media (max-width: 860px) {
         .cloudinary-media-wrap {
           float: none;
           width: 100%;
           max-width: 100%;
-          margin: 0 0 22px 0;
+          margin: 0 0 24px 0;
         }
       }
     </style>
@@ -186,7 +205,7 @@
       </section>
 
       <!-- MAIN CONTENT -->
-      <section class="subpage-section">
+      <section class="subpage-section subpage-section-wide">
         <div class="glass-card editorial-card editorial-paragraphs bio-text">
           <p>
             My work on the web sits at the intersection of technical
@@ -209,7 +228,7 @@
               loop
               muted
               playsinline
-              preload="metadata"
+              preload="auto"
               aria-label="Cloudinary visual media workflow animation"
             ></video>
           </figure>
@@ -304,3 +323,226 @@
             rel="noopener noreferrer"
             title="YouTube Music"
             ><i data-lucide="radio"></i
+          ></a>
+          <a
+            href="https://www.instagram.com/stewoak/?hl=en"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Instagram"
+            ><i data-lucide="instagram"></i
+          ></a>
+          <a
+            href="https://www.youtube.com/channel/UC8u5m2nX369WDcWCKt5KC6A"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="YouTube Channel"
+            ><i data-lucide="youtube"></i
+          ></a>
+          <a
+            href="https://soundcloud.com/stew-oak"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="SoundCloud"
+            ><i data-lucide="cloud-lightning"></i
+          ></a>
+        </div>
+        <p class="copyright">
+          &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          Stew Oak. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- SACRED GEOMETRY MANDALA BACKGROUND (P5.JS) -->
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (!window.p5) return;
+
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        new p5((p) => {
+          p.setup = () => {
+            const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+            canvas.parent("algorithmicBg");
+            p.noFill();
+            if (prefersReducedMotion) {
+              p.noLoop();
+            }
+          };
+
+          function drawPolygon(radius, sides, rotationOffset = 0) {
+            p.beginShape();
+            for (let i = 0; i < sides; i++) {
+              const a = rotationOffset + (p.TWO_PI / sides) * i;
+              p.vertex(Math.cos(a) * radius, Math.sin(a) * radius);
+            }
+            p.endShape(p.CLOSE);
+          }
+
+          function drawLotusRing(radius, petals, petalSize) {
+            for (let i = 0; i < petals; i++) {
+              const a = (p.TWO_PI / petals) * i;
+              p.push();
+              p.rotate(a);
+              p.translate(radius, 0);
+              p.beginShape();
+              p.vertex(-petalSize * 0.5, 0);
+              p.bezierCurveTo(
+                -petalSize * 0.2,
+                -petalSize * 0.48,
+                petalSize * 0.35,
+                -petalSize * 0.32,
+                petalSize * 0.65,
+                0
+              );
+              p.bezierCurveTo(
+                petalSize * 0.35,
+                petalSize * 0.32,
+                -petalSize * 0.2,
+                petalSize * 0.48,
+                -petalSize * 0.5,
+                0
+              );
+              p.endShape(p.CLOSE);
+              p.pop();
+            }
+          }
+
+          p.draw = () => {
+            p.background(11, 20, 13);
+
+            const t = prefersReducedMotion ? 0 : p.frameCount * 0.0014;
+            const maxDim = Math.hypot(p.width, p.height);
+            const base = maxDim * 0.12;
+
+            p.translate(p.width * 0.5, p.height * 0.5);
+
+            // 1. Subtle radial harmonic rays
+            p.push();
+            p.rotate(t * 0.35);
+            p.stroke(142, 179, 89, 24);
+            p.strokeWeight(0.9);
+            const rays = 24;
+            for (let i = 0; i < rays; i++) {
+              const a = (p.TWO_PI / rays) * i;
+              p.line(
+                Math.cos(a) * base * 0.4,
+                Math.sin(a) * base * 0.4,
+                Math.cos(a) * maxDim * 0.65,
+                Math.sin(a) * maxDim * 0.65
+              );
+            }
+            p.pop();
+
+            // 2. Seed & Flower of Life concentric rings
+            p.push();
+            p.rotate(-t * 0.5);
+            p.stroke(142, 179, 89, 48);
+            p.strokeWeight(1.1);
+            p.circle(0, 0, base * 2);
+
+            // Inner 6-fold Seed of Life
+            for (let i = 0; i < 6; i++) {
+              const a = (p.TWO_PI / 6) * i;
+              p.circle(Math.cos(a) * base, Math.sin(a) * base, base * 2);
+            }
+
+            // Second 12-fold Flower of Life ring
+            p.stroke(232, 222, 201, 34);
+            for (let i = 0; i < 12; i++) {
+              const a = (p.TWO_PI / 12) * i;
+              p.circle(
+                Math.cos(a) * base * 2,
+                Math.sin(a) * base * 2,
+                base * 2
+              );
+            }
+            p.circle(0, 0, base * 4);
+            p.circle(0, 0, base * 6);
+            p.pop();
+
+            // 3. Counter-rotating Sri / Star-Polygon geometry
+            p.push();
+            p.rotate(t * 0.7);
+            p.stroke(142, 179, 89, 42);
+            p.strokeWeight(1.1);
+            drawPolygon(base * 2.2, 3, -p.HALF_PI);
+            drawPolygon(base * 2.2, 3, p.HALF_PI);
+
+            p.stroke(232, 222, 201, 32);
+            drawPolygon(base * 3.1, 6, 0);
+            drawPolygon(base * 3.1, 6, p.PI / 6);
+            p.pop();
+
+            // 4. Outer Lotus Petal Rings
+            p.push();
+            p.rotate(-t * 0.3);
+            p.stroke(142, 179, 89, 38);
+            p.strokeWeight(1);
+            drawLotusRing(base * 3.15, 16, base * 0.85);
+
+            p.stroke(232, 222, 201, 28);
+            drawLotusRing(base * 4.35, 24, base * 1.15);
+            p.circle(0, 0, base * 8.7);
+            p.circle(0, 0, base * 9.1);
+            p.pop();
+
+            // 5. Breathing geometric vertices on the outer ring
+            p.push();
+            p.rotate(t * 0.45);
+            const pulse = 1 + Math.sin(t * 2.5) * 0.03;
+            const nodeCount = 12;
+            p.stroke(142, 179, 89, 46);
+            p.fill(142, 179, 89, 20);
+            for (let i = 0; i < nodeCount; i++) {
+              const a = (p.TWO_PI / nodeCount) * i;
+              const nx = Math.cos(a) * base * 4.35 * pulse;
+              const ny = Math.sin(a) * base * 4.35 * pulse;
+              p.circle(nx, ny, base * 0.24);
+            }
+            p.pop();
+          };
+
+          p.windowResized = () => {
+            p.resizeCanvas(p.windowWidth, p.windowHeight);
+            if (prefersReducedMotion) {
+              p.redraw();
+            }
+          };
+        });
+      });
+    </script>
+
+    <!-- NAVIGATION & ICON SCRIPT -->
+    <script>
+      const myStuffDropdown = document.getElementById("myStuffDropdown");
+      const myStuffBtn = document.getElementById("myStuffBtn");
+
+      if (myStuffBtn && myStuffDropdown) {
+        myStuffBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const isOpen = myStuffDropdown.classList.toggle("open");
+          myStuffBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+      }
+
+      window.addEventListener("click", () => {
+        if (myStuffDropdown) {
+          myStuffDropdown.classList.remove("open");
+          if (myStuffBtn) myStuffBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      });
+    </script>
+  </body>
+</html>
