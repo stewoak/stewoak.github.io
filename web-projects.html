@@ -51,11 +51,34 @@
         height: 100% !important;
       }
 
-      .navbar,
+      /* Keep navbar and its dropdown well above main and footer */
+      .navbar {
+        z-index: 200;
+      }
+
       main,
       .site-footer {
         position: relative;
         z-index: 1;
+      }
+
+      /* Hover bridge + desktop hover support for My Stuff submenu */
+      .nav-dropdown::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        height: 16px;
+      }
+
+      @media (hover: hover) {
+        .nav-dropdown:hover .nav-dropdown-menu {
+          display: block;
+        }
+        .nav-dropdown:hover .nav-chevron {
+          transform: rotate(180deg);
+        }
       }
 
       /* Wider container (+~18%) on large desktop screens */
