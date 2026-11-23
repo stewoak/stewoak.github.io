@@ -23,7 +23,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
-    <!-- p5.js for Fluid Sacred Geometry Mandala Background -->
+    <!-- p5.js for Algorithmic Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
     <style>
@@ -100,7 +100,7 @@
     </style>
   </head>
   <body>
-    <!-- FULL-WIDTH FLUID SACRED GEOMETRY MANDALA BACKGROUND -->
+    <!-- FULL-WIDTH ALGORITHMIC SHAPES BACKGROUND -->
     <div id="algorithmicBg" aria-hidden="true"></div>
 
     <!-- NAVIGATION BAR -->
@@ -356,244 +356,139 @@
       </div>
     </footer>
 
-    <!-- FLUID SACRED GEOMETRY MANDALA BACKGROUND (P5.JS) -->
+    <!-- BOLDER ALGORITHMIC FLOATING SHAPES BACKGROUND (P5.JS) -->
     <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        if (!window.p5) return;
-
+      new p5((p) => {
+        const SEED = 1974;
+        const shapes = [];
         const prefersReducedMotion = window.matchMedia(
           "(prefers-reduced-motion: reduce)"
         ).matches;
 
-        new p5((p) => {
-          const particles = [];
-          const PARTICLE_COUNT = 84;
-          let smoothMouseX = 0;
-          let smoothMouseY = 0;
+        p.setup = () => {
+          const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+          canvas.parent("algorithmicBg");
+          p.randomSeed(SEED);
+          p.noiseSeed(SEED);
+          initShapes();
+          if (prefersReducedMotion) {
+            p.noLoop();
+          }
+        };
 
-          p.setup = () => {
-            const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-            canvas.parent("algorithmicBg");
-            p.background(11, 20, 13);
-            p.noiseSeed(1974);
-            p.randomSeed(1974);
+        function initShapes() {
+          shapes.length = 0;
+          const count = Math.min(54, Math.max(26, Math.floor(p.width / 28)));
+          const kinds = ["circle", "ring", "polygon", "arc"];
+          const sidesOptions = [3, 4, 5, 6];
 
-            for (let i = 0; i < PARTICLE_COUNT; i++) {
-              particles.push(createParticle(true));
-            }
-
-            if (prefersReducedMotion) {
-              p.noLoop();
-            }
-          };
-
-          function createParticle(randomProgress = false) {
-            return {
+          for (let i = 0; i < count; i++) {
+            shapes.push({
+              x: p.random(p.width),
+              y: p.random(p.height),
+              size: p.random(24, 110),
               angle: p.random(p.TWO_PI),
-              radiusNorm: randomProgress ? p.random(0.05, 1.0) : p.random(0.02, 0.14),
-              radialSpeed: p.random(0.0008, 0.0022),
-              angularSpeed: p.random(0.002, 0.006) * (p.random() < 0.5 ? 1 : -1),
-              waveFreq: Math.floor(p.random(4, 12)),
-              waveAmp: p.random(8, 28),
-              size: p.random(1.8, 4.2),
-              isMoss: p.random() < 0.72,
-              phase: p.random(p.TWO_PI),
-            };
+              spin: p.random(-0.0045, 0.0045),
+              speed: p.random(0.24, 0.55),
+              noiseOffset: p.random(1000),
+              kind: kinds[Math.floor(p.random(kinds.length))],
+              sides:
+                sidesOptions[Math.floor(p.random(sidesOptions.length))],
+              tone: p.random() < 0.7 ? "moss" : "sand",
+              alpha: p.random(55, 115),
+            });
           }
+        }
 
-          function drawPolygon(radius, sides, rotationOffset = 0) {
-            p.beginShape();
-            for (let i = 0; i < sides; i++) {
-              const a = rotationOffset + (p.TWO_PI / sides) * i;
-              p.vertex(Math.cos(a) * radius, Math.sin(a) * radius);
-            }
-            p.endShape(p.CLOSE);
+        function drawPolygon(x, y, radius, sides) {
+          p.beginShape();
+          for (let i = 0; i < sides; i++) {
+            const a = (p.TWO_PI / sides) * i;
+            p.vertex(x + Math.cos(a) * radius, y + Math.sin(a) * radius);
           }
+          p.endShape(p.CLOSE);
+        }
 
-          function drawFluidLotus(radius, petals, petalLen, flutter) {
-            for (let i = 0; i < petals; i++) {
-              const a = (p.TWO_PI / petals) * i;
-              const localWave = Math.sin(flutter + i * 0.75) * 0.14;
-              const len = petalLen * (1 + localWave);
-              const spread = petalLen * (0.46 + Math.cos(flutter * 1.3 + i) * 0.08);
+        p.draw = () => {
+          p.background(11, 20, 13);
 
-              p.push();
-              p.rotate(a);
-              p.translate(radius, 0);
-              p.beginShape();
-              p.vertex(-len * 0.45, 0);
-              p.bezierCurveTo(
-                -len * 0.15,
-                -spread,
-                len * 0.38,
-                -spread * 0.65,
-                len * 0.72,
-                0
+          const t = p.frameCount * 0.002;
+
+          // Bolder connecting harmonic lines between nearby shapes
+          for (let i = 0; i < shapes.length; i++) {
+            for (let j = i + 1; j < shapes.length; j++) {
+              const d = p.dist(
+                shapes[i].x,
+                shapes[i].y,
+                shapes[j].x,
+                shapes[j].y
               );
-              p.bezierCurveTo(
-                len * 0.38,
-                spread * 0.65,
-                -len * 0.15,
-                spread,
-                -len * 0.45,
-                0
-              );
-              p.endShape(p.CLOSE);
-              p.pop();
+              if (d < 195) {
+                const lineAlpha = p.map(d, 0, 195, 58, 0);
+                p.stroke(142, 179, 89, lineAlpha);
+                p.strokeWeight(1.25);
+                p.line(shapes[i].x, shapes[i].y, shapes[j].x, shapes[j].y);
+              }
             }
           }
 
-          function drawHarmonicRose(baseRadius, petals, amplitude, phase, detail = 180) {
-            p.beginShape();
-            for (let i = 0; i <= detail; i++) {
-              const theta = (p.TWO_PI / detail) * i;
-              const r =
-                baseRadius +
-                Math.sin(petals * theta + phase) * amplitude +
-                Math.cos((petals * 0.5) * theta - phase * 1.4) * (amplitude * 0.45);
-              p.vertex(Math.cos(theta) * r, Math.sin(theta) * r);
-            }
-            p.endShape(p.CLOSE);
-          }
+          // Bold algorithmic drifting geometric shapes
+          for (const s of shapes) {
+            if (!prefersReducedMotion) {
+              const flowAngle =
+                p.noise(s.x * 0.0022, s.y * 0.0022, t + s.noiseOffset) *
+                p.TWO_PI *
+                2;
+              s.x += Math.cos(flowAngle) * s.speed;
+              s.y += Math.sin(flowAngle) * s.speed;
+              s.angle += s.spin;
 
-          p.draw = () => {
-            // Soft translucent veil creates silky fluid motion trails
-            p.noStroke();
-            if (prefersReducedMotion) {
-              p.fill(11, 20, 13, 255);
+              const pad = s.size;
+              if (s.x < -pad) s.x = p.width + pad;
+              if (s.x > p.width + pad) s.x = -pad;
+              if (s.y < -pad) s.y = p.height + pad;
+              if (s.y > p.height + pad) s.y = -pad;
+            }
+
+            p.push();
+            p.translate(s.x, s.y);
+            p.rotate(s.angle);
+
+            if (s.tone === "moss") {
+              p.stroke(161, 199, 104, s.alpha);
+              p.fill(142, 179, 89, s.alpha * 0.24);
             } else {
-              p.fill(11, 20, 13, 46);
+              p.stroke(232, 222, 201, s.alpha * 0.85);
+              p.fill(232, 222, 201, s.alpha * 0.16);
             }
-            p.rect(0, 0, p.width, p.height);
+            p.strokeWeight(1.8);
 
-            const t = prefersReducedMotion ? 0 : p.frameCount * 0.008;
-            const maxDim = Math.hypot(p.width, p.height);
-            const base = maxDim * 0.115;
-
-            // Gentle mouse parallax
-            const targetX = (p.mouseX - p.width * 0.5) * 0.035;
-            const targetY = (p.mouseY - p.height * 0.5) * 0.035;
-            smoothMouseX = p.lerp(smoothMouseX, Number.isFinite(targetX) ? targetX : 0, 0.04);
-            smoothMouseY = p.lerp(smoothMouseY, Number.isFinite(targetY) ? targetY : 0, 0.04);
-
-            p.translate(p.width * 0.5 + smoothMouseX, p.height * 0.5 + smoothMouseY);
-            p.noFill();
-
-            // Staggered breathing waves for organic expansion/contraction
-            const breath1 = 1 + Math.sin(t * 0.7) * 0.055;
-            const breath2 = 1 + Math.sin(t * 0.7 - 0.9) * 0.065;
-            const breath3 = 1 + Math.sin(t * 0.7 - 1.8) * 0.075;
-
-            // 1. Undulating Harmonic Rose Waveforms
-            p.push();
-            p.rotate(t * 0.09);
-            p.stroke(142, 179, 89, 34);
-            p.strokeWeight(1.1);
-            drawHarmonicRose(base * 1.85 * breath1, 6, base * 0.22, t * 1.1);
-
-            p.stroke(232, 222, 201, 24);
-            drawHarmonicRose(base * 3.35 * breath2, 12, base * 0.28, -t * 0.85);
-
-            p.stroke(142, 179, 89, 22);
-            drawHarmonicRose(base * 4.7 * breath3, 18, base * 0.34, t * 0.65);
-            p.pop();
-
-            // 2. Breathing Seed & Flower of Life
-            p.push();
-            p.rotate(-t * 0.12);
-            const seedR = base * breath1;
-            p.stroke(142, 179, 89, 44);
-            p.strokeWeight(1);
-            p.circle(0, 0, seedR * 2);
-
-            for (let i = 0; i < 6; i++) {
-              const a = (p.TWO_PI / 6) * i;
-              const orbit = seedR * (1 + Math.sin(t * 1.1 + i) * 0.04);
-              p.circle(Math.cos(a) * orbit, Math.sin(a) * orbit, seedR * 2);
+            if (s.kind === "circle") {
+              p.circle(0, 0, s.size);
+            } else if (s.kind === "ring") {
+              p.noFill();
+              p.circle(0, 0, s.size);
+              p.circle(0, 0, s.size * 0.55);
+            } else if (s.kind === "polygon") {
+              drawPolygon(0, 0, s.size * 0.5, s.sides);
+            } else if (s.kind === "arc") {
+              p.noFill();
+              p.arc(0, 0, s.size, s.size, 0, p.PI * 1.35);
             }
 
-            const flowerR = base * 2 * breath2;
-            p.stroke(232, 222, 201, 26);
-            for (let i = 0; i < 12; i++) {
-              const a = (p.TWO_PI / 12) * i;
-              p.circle(Math.cos(a) * flowerR, Math.sin(a) * flowerR, seedR * 1.95);
-            }
             p.pop();
+          }
+        };
 
-            // 3. Counter-Rotating Star Polygons (Sri-inspired geometry)
-            p.push();
-            p.rotate(t * 0.16);
-            p.stroke(142, 179, 89, 46);
-            p.strokeWeight(1.15);
-            drawPolygon(base * 2.15 * breath1, 3, -p.HALF_PI);
-            drawPolygon(base * 2.15 * breath1, 3, p.HALF_PI);
-            p.pop();
-
-            p.push();
-            p.rotate(-t * 0.14);
-            p.stroke(232, 222, 201, 32);
-            p.strokeWeight(1);
-            drawPolygon(base * 3.05 * breath2, 6, 0);
-            drawPolygon(base * 3.05 * breath2, 6, p.PI / 6);
-            p.pop();
-
-            // 4. Morphing Fluid Lotus Petals
-            p.push();
-            p.rotate(t * 0.07);
-            p.stroke(142, 179, 89, 40);
-            p.strokeWeight(1);
-            drawFluidLotus(base * 2.95 * breath2, 16, base * 0.88, t * 1.5);
-            p.pop();
-
-            p.push();
-            p.rotate(-t * 0.05);
-            p.stroke(232, 222, 201, 26);
-            p.strokeWeight(0.95);
-            drawFluidLotus(base * 4.25 * breath3, 24, base * 1.18, -t * 1.2);
-            p.pop();
-
-            // 5. Spiraling Harmonic Energy Particles
-            const maxOrbit = maxDim * 0.56;
-            for (let i = 0; i < particles.length; i++) {
-              const pt = particles[i];
-
-              if (!prefersReducedMotion) {
-                pt.radiusNorm += pt.radialSpeed;
-                pt.angle += pt.angularSpeed;
-                if (pt.radiusNorm > 1.05) {
-                  particles[i] = createParticle(false);
-                  continue;
-                }
-              }
-
-              const rBase = pt.radiusNorm * maxOrbit;
-              const wave =
-                Math.sin(pt.angle * pt.waveFreq + t + pt.phase) * pt.waveAmp;
-              const r = rBase + wave;
-              const px = Math.cos(pt.angle) * r;
-              const py = Math.sin(pt.angle) * r;
-
-              const fadeEdge = Math.sin(Math.min(1, pt.radiusNorm) * p.PI);
-              const alpha = fadeEdge * 145;
-
-              p.noStroke();
-              if (pt.isMoss) {
-                p.fill(161, 199, 104, alpha);
-              } else {
-                p.fill(232, 222, 201, alpha * 0.85);
-              }
-              p.circle(px, py, pt.size * (0.7 + fadeEdge * 0.5));
-            }
-          };
-
-          p.windowResized = () => {
-            p.resizeCanvas(p.windowWidth, p.windowHeight);
-            p.background(11, 20, 13);
-            if (prefersReducedMotion) {
-              p.redraw();
-            }
-          };
-        });
+        p.windowResized = () => {
+          p.resizeCanvas(p.windowWidth, p.windowHeight);
+          p.randomSeed(SEED);
+          p.noiseSeed(SEED);
+          initShapes();
+          if (prefersReducedMotion) {
+            p.redraw();
+          }
+        };
       });
     </script>
 
