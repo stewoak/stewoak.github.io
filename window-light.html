@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Window Light Study | Stew Oak</title>
+
+    <!-- Master Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="stew-logo-1.png" />
+    <link rel="apple-touch-icon" href="stew-logo-1.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+    <style>
+      .study-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 48px 24px 72px;
+      }
+
+      .study-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .study-subtitle {
+        color: var(--color-sand-200);
+        font-size: 1rem;
+        font-weight: 300;
+        max-width: 620px;
+      }
+
+      .study-stage {
+        position: relative;
+        width: 100%;
+        height: 72vh;
+        min-height: 460px;
+        max-height: 780px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #25322c;
+        border: 1px solid rgba(142, 179, 89, 0.25);
+        box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+      }
+
+      .study-stage:fullscreen {
+        border-radius: 0;
+        border: none;
+        max-height: none;
+        height: 100vh;
+      }
+
+      #sceneCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .stage-overlay-title {
+        position: absolute;
+        left: 32px;
+        top: 28px;
+        pointer-events: none;
+        text-shadow: 0 2px 20px rgba(24, 38, 28, 0.85);
+      }
+
+      .stage-overlay-title h2 {
+        margin: 0;
+        font-family: var(--font-serif);
+        font-weight: 400;
+        font-size: clamp(28px, 4vw, 54px);
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: #fff8e7;
+      }
+
+      .stage-controls {
+        position: absolute;
+        left: 28px;
+        right: 28px;
+        bottom: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        pointer-events: none;
+      }
+
+      .blind-control {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 20px;
+        background: rgba(15, 26, 18, 0.88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(142, 179, 89, 0.35);
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        color: var(--color-sand-100);
+        letter-spacing: 0.04em;
+      }
+
+      .blind-control input[type="range"] {
+        accent-color: var(--color-moss-500);
+        width: clamp(120px, 18vw, 220px);
+        cursor: pointer;
+      }
+
+      .fullscreen-btn {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 18px;
+        background: rgba(15, 26, 18, 0.88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(142, 179, 89, 0.35);
+        border-radius: 9999px;
+        color: var(--color-sand-100);
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .fullscreen-btn:hover {
+        background: var(--color-bg-700);
+        border-color: var(--color-moss-400);
+        color: var(--color-moss-300);
+      }
+
+      .fullscreen-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVIGATION BAR -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand font-serif">
+          <img
+            src="stew-logo-1.png"
+            alt="Stew Oak Logo"
+            class="brand-logo"
+            onerror="this.style.display = 'none'"
+          />
+          <div class="brand-text">
+            <span class="brand-title">STEW OAK</span>
+            <span class="brand-subtitle" data-i18n="nav_subtitle">Music</span>
+          </div>
+        </a>
+
+        <nav class="nav-links">
+          <a href="index.html#about" data-i18n="nav_bio">Bio</a>
+          <a href="index.html#music" data-i18n="nav_music">Music & EP</a>
+          <a href="index.html#videos" data-i18n="nav_videos">Videos</a>
+          <div class="nav-dropdown" id="myStuffDropdown">
+            <button
+              type="button"
+              class="nav-dropdown-trigger"
+              id="myStuffBtn"
+              aria-expanded="false"
+            >
+              <span data-i18n="nav_mystuff">My Stuff</span>
+              <i data-lucide="chevron-down" class="nav-chevron"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="myStuffMenu">
+              <a href="web-projects.html" data-i18n="nav_web_projects"
+                >Web Projects</a
+              >
+              <a
+                href="window-light.html"
+                class="active"
+                data-i18n="nav_window_light"
+                >Window Light Study</a
+              >
+              <a href="inspiration.html" data-i18n="nav_inspiration"
+                >Inspiration</a
+              >
+            </div>
+          </div>
+          <a href="index.html#contact" data-i18n="nav_contact">Contact</a>
+        </nav>
+
+        <div class="nav-controls">
+          <div class="custom-lang-dropdown" id="langDropdown">
+            <button
+              class="lang-btn"
+              id="langBtn"
+              type="button"
+              aria-label="Select Language"
+            >
+              <span id="currentFlag">🇬🇧</span>
+              <span id="currentLangCode">EN</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+              <div
+                class="lang-option"
+                data-lang="en"
+                data-flag="🇬🇧"
+                data-code="EN"
+              >
+                <span class="flag">🇬🇧</span> English
+              </div>
+              <div
+                class="lang-option"
+                data-lang="he"
+                data-flag="🇮🇱"
+                data-code="HE"
+              >
+                <span class="flag">🇮🇱</span> עברית
+              </div>
+              <div
+                class="lang-option"
+                data-lang="fr"
+                data-flag="🇫🇷"
+                data-code="FR"
+              >
+                <span class="flag">🇫🇷</span> Français
+              </div>
+              <div
+                class="lang-option"
+                data-lang="de"
+                data-flag="🇩🇪"
+                data-code="DE"
+              >
+                <span class="flag">🇩🇪</span> Deutsch
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-socials">
+            <a
+              href="https://open.spotify.com/artist/4tGni6VFhS9lafmh1QXMuF"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Spotify"
+              ><i data-lucide="music"></i
+            ></a>
+            <a
+              href="https://music.apple.com/us/artist/stew-oak/1895556396"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Apple Music"
+              ><i data-lucide="disc"></i
+            ></a>
+            <a
+              href="https://music.youtube.com/@TheStewoak"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="YouTube Music"
+              ><i data-lucide="radio"></i
+            ></a>
+            <a
+              href="https://www.instagram.com/stewoak/?hl=en"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Instagram"
+              ><i data-lucide="instagram"></i
+            ></a>
+            <a
+              href="https://www.youtube.com/channel/UC8u5m2nX369WDcWCKt5KC6A"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="YouTube Channel"
+              ><i data-lucide="youtube"></i
+            ></a>
+            <a
+              href="https://soundcloud.com/stew-oak"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="SoundCloud"
+              ><i data-lucide="cloud-lightning"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="study-wrapper">
+      <div class="study-header">
+        <div>
+          <span class="section-tag"
+            ><i data-lucide="sun"></i>
+            <span data-i18n="study_tag">Interactive 3D • WebGL</span></span
+          >
+          <h1
+            class="font-serif section-heading"
+            style="margin-bottom: 8px"
+            data-i18n="study_heading"
+          >
+            Window Light Study
+          </h1>
+          <p class="study-subtitle" data-i18n="study_desc">
+            A real-time Three.js and GLSL raymarched light study of a quiet
+            studio corner. Adjust the venetian blinds to watch afternoon light
+            shift across the room.
+          </p>
+        </div>
+        <a href="index.html" class="btn btn-secondary">
+          <i data-lucide="arrow-left"></i>
+          <span data-i18n="btn_back_home">Back to Home</span>
+        </a>
+      </div>
+
+      <section class="study-stage" id="studyStage">
+        <canvas id="sceneCanvas" aria-hidden="true"></canvas>
+        <div class="stage-overlay-title">
+          <h2>Window light</h2>
+        </div>
+        <div class="stage-controls">
+          <label class="blind-control">
+            <span data-i18n="slider_label">Blind opening</span>
+            <input
+              id="blindSlider"
+              aria-label="Blind opening"
+              type="range"
+              min="0"
+              max="100"
+              value="59"
+            />
+          </label>
+          <button
+            type="button"
+            class="fullscreen-btn"
+            id="fullscreenBtn"
+            aria-label="Toggle Fullscreen"
+          >
+            <i data-lucide="maximize-2"></i>
+            <span data-i18n="btn_fullscreen">Fullscreen</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <a href="index.html" class="brand font-serif">
+          <img
+            src="stew-logo-1.png"
+            alt="Stew Oak Logo"
+            class="brand-logo"
+            onerror="this.style.display = 'none'"
+          />
+          <span class="brand-title">STEW OAK</span>
+        </a>
+        <nav class="footer-links">
+          <a href="index.html#about" data-i18n="nav_bio">Bio</a>
+          <a href="index.html#music" data-i18n="nav_music">Music & EP</a>
+          <a href="index.html#videos" data-i18n="nav_videos">Videos</a>
+          <a href="web-projects.html" data-i18n="nav_web_projects"
+            >Web Projects</a
+          >
+          <a href="window-light.html" data-i18n="nav_window_light"
+            >Window Light Study</a
+          >
+          <a href="inspiration.html" data-i18n="nav_inspiration"
+            >Inspiration</a
+          >
+          <a href="index.html#contact" data-i18n="nav_contact">Contact</a>
+        </nav>
+        <div class="footer-socials">
+          <a
+            href="https://open.spotify.com/artist/4tGni6VFhS9lafmh1QXMuF"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Spotify"
+            ><i data-lucide="music"></i
+          ></a>
+          <a
+            href="https://music.apple.com/us/artist/stew-oak/1895556396"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Apple Music"
+            ><i data-lucide="disc"></i
+          ></a>
+          <a
+            href="https://music.youtube.com/@TheStewoak"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="YouTube Music"
+            ><i data-lucide="radio"></i
+          ></a>
+          <a
+            href="https://www.instagram.com/stewoak/?hl=en"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Instagram"
+            ><i data-lucide="instagram"></i
+          ></a>
+          <a
+            href="https://www.youtube.com/channel/UC8u5m2nX369WDcWCKt5KC6A"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="YouTube Channel"
+            ><i data-lucide="youtube"></i
+          ></a>
+          <a
+            href="https://soundcloud.com/stew-oak"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="SoundCloud"
+            ><i data-lucide="cloud-lightning"></i
+          ></a>
+        </div>
+        <p class="copyright">
+          &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          Stew Oak. <span data-i18n="footer_rights">All rights reserved.</span>
+        </p>
+      </div>
+    </footer>
+
+    <!-- THREE.JS 3D SCENE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script>
+      const T = THREE,
+        canvas = document.getElementById("sceneCanvas"),
+        container = document.getElementById("studyStage"),
+        slider = document.getElementById("blindSlider");
+      const renderer = new T.WebGLRenderer({ canvas, antialias: true });
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = T.PCFSoftShadowMap;
+      const scene = new T.Scene();
+      scene.background = new T.Color(0xa8bdab);
+      const camera = new T.PerspectiveCamera(42, 1, 0.1, 32);
+      camera.position.set(3.35, 2.84, 5.42);
+      camera.lookAt(-0.25, 1.63, -1.35);
+
+      const mat = (c, roughness = 0.6, metalness = 0) =>
+        new T.MeshStandardMaterial({ color: c, roughness, metalness });
+
+      function box(w, h, d, m, x, y, z, parent = scene) {
+        const mesh = new T.Mesh(new T.BoxGeometry(w, h, d), m);
+        mesh.position.set(x, y, z);
+        mesh.castShadow = mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      }
+
+      function cylinder(rt, rb, h, m, x, y, z, parent = scene) {
+        const mesh = new T.Mesh(new T.CylinderGeometry(rt, rb, h, 40), m);
+        mesh.position.set(x, y, z);
+        mesh.receiveShadow = mesh.castShadow = true;
+        parent.add(mesh);
+        return mesh;
+      }
+
+      let seed = 1987;
+      function rand() {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        return seed / 4294967296;
+      }
+
+      function wood() {
+        const c = document.createElement("canvas");
+        c.width = 1024;
+        c.height = 256;
+        const g = c.getContext("2d");
+        g.fillStyle = "#a7754f";
+        g.fillRect(0, 0, c.width, c.height);
+        for (let i = 0; i < 1700; i++) {
+          const y = rand() * 256,
+            x = rand() * 1100 - 80,
+            w = 18 + rand() * 460;
+          g.strokeStyle =
+            rand() < 0.51 ? "rgba(66,32,17,.15)" : "rgba(231,182,118,.19)";
+          g.lineWidth = 0.25 + rand();
+          g.beginPath();
+          g.moveTo(x, y);
+          g.bezierCurveTo(x + w * 0.28, y - 2, x + w * 0.6, y + 4, x + w, y);
+          g.stroke();
+        }
+        const t = new T.CanvasTexture(c);
+        t.colorSpace = T.SRGBColorSpace;
+        t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+        return t;
+      }
+
+      const walnut = new T.MeshStandardMaterial({
+          map: wood(),
+          roughness: 0.43,
+        }),
+        paint = mat(0x39564c, 0.89),
+        floor = mat(0x685947, 0.82),
+        trim = mat(0x6e5945),
+        steel = mat(0x272e30, 0.38, 0.55),
+        keys = mat(0x4b5251, 0.55);
+
+      box(12, 0.12, 12, mat(0xb5ab8e, 0.95), 0, 4.52, 0);
+      box(12, 0.12, 12, floor, 0, -0.09, 0);
+      box(10, 4.8, 0.15, paint, 0, 2.34, -3.8);
+
+      // Aperture at x=-3.3 spans y=[1.05,3.8], z=[-3.1,1.3].
+      box(0.16, 1.05, 8, paint, -3.4, 0.525, -0.8);
+      box(0.16, 0.9, 8, paint, -3.4, 4.25, -0.8);
+      box(0.16, 2.8, 2.3, paint, -3.4, 2.43, 2.45);
+      box(0.16, 2.8, 0.7, paint, -3.4, 2.43, -3.45);
+      for (const y of [1.05, 3.8]) box(0.26, 0.1, 4.55, trim, -3.3, y, -0.9);
+      for (const z of [-3.1, -0.9, 1.3])
+        box(0.13, 2.8, 0.07, trim, -3.3, 2.44, z);
+      const slats = [];
+      for (let j = 0; j < 20; j++)
+        slats.push(box(0.085, 0.044, 4.4, trim, -3.26, 0, -0.9));
+
+      // Desk
+      box(4.55, 0.11, 1.89, walnut, 0, 1.17, -1.08);
+      for (const x of [-1.96, 1.96])
+        for (const z of [-1.88, -0.27])
+          box(0.075, 1.12, 0.075, steel, x, 0.57, z);
+
+      // Monitor
+      box(0.65, 0.04, 0.43, steel, 0.22, 1.245, -1.61);
+      box(0.09, 0.33, 0.09, steel, 0.22, 1.39, -1.65);
+      box(1.84, 1.05, 0.095, steel, 0.22, 2.04, -1.66);
+
+      // Garden Vista
+      function garden() {
+        const c = document.createElement("canvas");
+        c.width = 896;
+        c.height = 480;
+        const g = c.getContext("2d"),
+          sky = g.createLinearGradient(0, 0, 0, 480);
+        sky.addColorStop(0, "#b6c9c1");
+        sky.addColorStop(0.65, "#e6d9b7");
+        sky.addColorStop(1, "#859783");
+        g.fillStyle = sky;
+        g.fillRect(0, 0, c.width, c.height);
+        for (let layer = 0; layer < 3; layer++) {
+          g.fillStyle = ["#a6b6a4", "#93a58c", "#768d7b"][layer];
+          for (let i = 0; i < 155; i++) {
+            const x = rand() * 960 - 25,
+              y =
+                290 +
+                30 * layer +
+                37 * Math.sin(x * 0.008 + layer) +
+                rand() * 29,
+              r = 10 + rand() * 28;
+            g.beginPath();
+            g.ellipse(x, y, r, r * (0.5 + rand() * 0.6), 0, 0, Math.PI * 2);
+            g.fill();
+            g.fillRect(x - r, y, 2 * r, 480 - y);
+          }
+        }
+        const tex = new T.CanvasTexture(c);
+        tex.colorSpace = T.SRGBColorSpace;
+        return tex;
+      }
+
+      const vista = new T.Mesh(
+        new T.PlaneGeometry(15, 7),
+        new T.MeshBasicMaterial({ map: garden(), side: T.DoubleSide }),
+      );
+      vista.rotation.y = Math.PI / 2;
+      vista.position.set(-5.8, 2, -0.8);
+      scene.add(vista);
+
+      // Monitor Screen Image
+      const loader = new T.TextureLoader();
+      loader.setCrossOrigin("anonymous");
+      const screenTex = loader.load(
+        "https://res.cloudinary.com/stewart-oak/image/upload/v1795352094/Pixel.jpg",
+        () => draw(),
+      );
+      screenTex.colorSpace = T.SRGBColorSpace;
+      box(
+        1.76,
+        0.97,
+        0.007,
+        new T.MeshBasicMaterial({ map: screenTex }),
+        0.22,
+        2.04,
+        -1.609,
+      );
+
+      // Keyboard & Mouse
+      box(1.12, 0.04, 0.38, steel, 0.22, 1.25, -0.68);
+      const caps = new T.InstancedMesh(
+          new T.BoxGeometry(0.073, 0.031, 0.055),
+          keys,
+          52,
+        ),
+        dummy = new T.Object3D();
+      for (let row = 0; row < 4; row++)
+        for (let col = 0; col < 13; col++) {
+          dummy.position.set(
+            -0.266 + col * 0.08,
+            1.286,
+            -0.795 + row * 0.073,
+          );
+          dummy.updateMatrix();
+          caps.setMatrixAt(row * 13 + col, dummy.matrix);
+        }
+      caps.castShadow = caps.receiveShadow = true;
+      scene.add(caps);
+      const mouse = new T.Mesh(new T.SphereGeometry(0.11, 24, 16), steel);
+      mouse.scale.set(0.7, 0.43, 1.18);
+      mouse.position.set(1.07, 1.258, -0.67);
+      scene.add(mouse);
+
+      // Book & Plant
+      box(0.58, 0.064, 0.37, mat(0x704b39), -1.05, 1.254, -0.7).rotation.y =
+        -0.18;
+      const pot = mat(0x925736, 0.77),
+        green = mat(0x3a6947, 0.65);
+      cylinder(0.18, 0.13, 0.31, pot, -1.45, 1.386, -1.62);
+      for (let j = 0; j < 21; j++) {
+        const a = j * 2.4,
+          l = 0.24 + rand() * 0.18;
+        const leaf = new T.Mesh(new T.SphereGeometry(1, 12, 9), green);
+        leaf.scale.set(0.045, l, 0.075);
+        leaf.position.set(
+          -1.45 + Math.cos(a) * 0.11,
+          1.69 + rand() * 0.08,
+          -1.62 + Math.sin(a) * 0.12,
+        );
+        leaf.rotation.z = Math.cos(a) * 0.85;
+        leaf.rotation.x = Math.sin(a) * 0.85;
+        leaf.castShadow = true;
+        scene.add(leaf);
+      }
+
+      // Brass Lamp
+      const brass = mat(0xb18a4e, 0.31, 0.65);
+      cylinder(0.17, 0.19, 0.04, brass, 1.66, 1.25, -1.45);
+      cylinder(0.014, 0.015, 0.65, brass, 1.66, 1.59, -1.45);
+      cylinder(0.075, 0.255, 0.23, mat(0xd7ab76, 0.52), 1.66, 1.91, -1.45);
+
+      // Acoustic Guitar & Stand next to the desk
+      function createAcousticGuitar() {
+        const root = new T.Group();
+        const spruce = mat(0xd8a363, 0.38, 0.04);
+        const mahogany = mat(0x6e361c, 0.44, 0.05);
+        const rosewood = mat(0x28150d, 0.52);
+        const bindingMat = mat(0xf2e6cf, 0.35);
+        const standSteel = mat(0x1e2224, 0.45, 0.6);
+        const foamPad = mat(0x141617, 0.9);
+        const fretWire = mat(0xcfd4d6, 0.25, 0.85);
+        const tunerChrome = mat(0xdbe0e2, 0.22, 0.9);
+
+        // Stand
+        const stand = new T.Group();
+        for (const side of [-1, 1]) {
+          const frontLeg = box(
+            0.032,
+            0.66,
+            0.032,
+            standSteel,
+            side * 0.24,
+            0.31,
+            0.13,
+            stand,
+          );
+          frontLeg.rotation.x = -0.26;
+          frontLeg.rotation.z = -side * 0.08;
+
+          const backLeg = box(
+            0.032,
+            0.66,
+            0.032,
+            standSteel,
+            side * 0.24,
+            0.31,
+            -0.13,
+            stand,
+          );
+          backLeg.rotation.x = 0.26;
+          backLeg.rotation.z = -side * 0.08;
+
+          const cradle = cylinder(
+            0.022,
+            0.022,
+            0.22,
+            foamPad,
+            side * 0.2,
+            0.16,
+            0.15,
+            stand,
+          );
+          cradle.rotation.x = Math.PI / 2 - 0.18;
+
+          const backRest = cylinder(
+            0.02,
+            0.02,
+            0.22,
+            foamPad,
+            side * 0.16,
+            0.55,
+            -0.06,
+            stand,
+          );
+          backRest.rotation.z = Math.PI / 2;
+        }
+        box(0.46, 0.028, 0.028, standSteel, 0, 0.56, 0, stand);
+        root.add(stand);
+
+        // Guitar tilted slightly back on stand
+        const guitar = new T.Group();
+        guitar.position.set(0, 0.17, 0.08);
+        guitar.rotation.x = -0.17;
+        root.add(guitar);
+
+        const shape = new T.Shape();
+        shape.moveTo(0, 0);
+        shape.bezierCurveTo(0.24, 0.0, 0.36, 0.1, 0.36, 0.26);
+        shape.bezierCurveTo(0.36, 0.4, 0.23, 0.47, 0.21, 0.56);
+        shape.bezierCurveTo(0.19, 0.65, 0.28, 0.72, 0.28, 0.85);
+        shape.bezierCurveTo(0.28, 0.99, 0.16, 1.07, 0, 1.07);
+        shape.bezierCurveTo(-0.16, 1.07, -0.28, 0.99, -0.28, 0.85);
+        shape.bezierCurveTo(-0.28, 0.72, -0.19, 0.65, -0.21, 0.56);
+        shape.bezierCurveTo(-0.23, 0.47, -0.36, 0.4, -0.36, 0.26);
+        shape.bezierCurveTo(-0.36, 0.1, -0.24, 0.0, 0, 0);
+
+        const bodyDepth = 0.2;
+        const bodyGeo = new T.ExtrudeGeometry(shape, {
+          depth: bodyDepth,
+          bevelEnabled: true,
+          bevelThickness: 0.008,
+          bevelSize: 0.008,
+          bevelSegments: 3,
+          curveSegments: 36,
+        });
+        const bodyMesh = new T.Mesh(bodyGeo, mahogany);
+        bodyMesh.position.z = -bodyDepth / 2;
+        bodyMesh.castShadow = bodyMesh.receiveShadow = true;
+        guitar.add(bodyMesh);
+
+        // Cream binding & spruce top
+        const bindGeo = new T.ExtrudeGeometry(shape, {
+          depth: 0.012,
+          bevelEnabled: true,
+          bevelThickness: 0.004,
+          bevelSize: 0.004,
+          bevelSegments: 2,
+          curveSegments: 36,
+        });
+        const frontBind = new T.Mesh(bindGeo, bindingMat);
+        frontBind.position.z = bodyDepth / 2 + 0.001;
+        guitar.add(frontBind);
+
+        const topGeo = new T.ShapeGeometry(shape, 36);
+        const topMesh = new T.Mesh(topGeo, spruce);
+        topMesh.position.z = bodyDepth / 2 + 0.016;
+        topMesh.receiveShadow = true;
+        guitar.add(topMesh);
+
+        const frontZ = bodyDepth / 2 + 0.017;
+
+        // Soundhole & Rosette
+        const hole = new T.Mesh(
+          new T.CircleGeometry(0.115, 36),
+          mat(0x110906, 0.95),
+        );
+        hole.position.set(0, 0.72, frontZ + 0.001);
+        guitar.add(hole);
+
+        const rosetteOuter = new T.Mesh(
+          new T.RingGeometry(0.122, 0.136, 36),
+          rosewood,
+        );
+        rosetteOuter.position.set(0, 0.72, frontZ + 0.0015);
+        guitar.add(rosetteOuter);
+
+        const rosetteInner = new T.Mesh(
+          new T.RingGeometry(0.138, 0.145, 36),
+          bindingMat,
+        );
+        rosetteInner.position.set(0, 0.72, frontZ + 0.0015);
+        guitar.add(rosetteInner);
+
+        // Pickguard
+        const pgShape = new T.Shape();
+        pgShape.moveTo(0.08, 0.8);
+        pgShape.bezierCurveTo(0.18, 0.78, 0.25, 0.68, 0.23, 0.56);
+        pgShape.bezierCurveTo(0.21, 0.47, 0.11, 0.46, 0.06, 0.54);
+        pgShape.bezierCurveTo(0.12, 0.62, 0.13, 0.72, 0.08, 0.8);
+        const pgMesh = new T.Mesh(
+          new T.ShapeGeometry(pgShape, 24),
+          mat(0x3c180e, 0.25),
+        );
+        pgMesh.position.z = frontZ + 0.0012;
+        guitar.add(pgMesh);
+
+        // Bridge & Saddle
+        box(0.25, 0.052, 0.018, rosewood, 0, 0.31, frontZ + 0.008, guitar);
+        box(0.13, 0.007, 0.014, bindingMat, 0, 0.32, frontZ + 0.018, guitar);
+        for (let i = 0; i < 6; i++) {
+          const sx = -0.052 + i * 0.0208;
+          const pin = new T.Mesh(
+            new T.SphereGeometry(0.006, 10, 8),
+            bindingMat,
+          );
+          pin.position.set(sx, 0.298, frontZ + 0.017);
+          guitar.add(pin);
+        }
+
+        // Neck & Fretboard
+        box(0.086, 0.82, 0.044, mahogany, 0, 1.45, 0.062, guitar);
+        box(0.09, 0.94, 0.014, rosewood, 0, 1.38, 0.091, guitar);
+        box(0.092, 0.012, 0.016, bindingMat, 0, 1.852, 0.093, guitar);
+
+        // Frets
+        for (let f = 1; f <= 16; f++) {
+          const fy = 1.85 - 0.92 * (1 - Math.pow(2, -f / 12));
+          box(0.091, 0.004, 0.004, fretWire, 0, fy, 0.099, guitar);
+        }
+
+        // Headstock & Tuners
+        const head = box(0.125, 0.28, 0.026, mahogany, 0, 1.98, 0.042, guitar);
+        head.rotation.x = -0.18;
+        const headFace = box(
+          0.125,
+          0.28,
+          0.005,
+          rosewood,
+          0,
+          1.982,
+          0.056,
+          guitar,
+        );
+        headFace.rotation.x = -0.18;
+
+        for (let side of [-1, 1]) {
+          for (let t = 0; t < 3; t++) {
+            const ty = 1.91 + t * 0.065;
+            const tz = 0.045 - t * 0.012;
+            const peg = cylinder(
+              0.007,
+              0.007,
+              0.045,
+              tunerChrome,
+              side * 0.075,
+              ty,
+              tz,
+              guitar,
+            );
+            peg.rotation.z = Math.PI / 2;
+            box(
+              0.018,
+              0.026,
+              0.012,
+              tunerChrome,
+              side * 0.098,
+              ty,
+              tz,
+              guitar,
+            );
+          }
+        }
+
+        // 6 Strings
+        for (let i = 0; i < 6; i++) {
+          const bx = -0.052 + i * 0.0208;
+          const nx = -0.036 + i * 0.0144;
+          const len = Math.hypot(nx - bx, 1.532);
+          const sMat = i < 3 ? brass : tunerChrome;
+          const str = new T.Mesh(
+            new T.CylinderGeometry(0.0014 + (5 - i) * 0.00022, 0.0014, len, 8),
+            sMat,
+          );
+          str.position.set((bx + nx) / 2, (0.32 + 1.852) / 2, frontZ + 0.021);
+          str.rotation.z = Math.atan2(bx - nx, 1.532);
+          str.rotation.x = 0.012;
+          guitar.add(str);
+        }
+
+        root.position.set(2.58, 0, -1.05);
+        root.rotation.y = -0.62;
+        scene.add(root);
+        return root;
+      }
+      createAcousticGuitar();
+
+      // Lighting
+      scene.add(new T.HemisphereLight(0xe0e9da, 0x947e66, 1.48));
+      const key = new T.DirectionalLight(0xffddb0, 3.5);
+      const sun = new T.Vector3(-1, 0.47, -0.27).normalize();
+      key.position.copy(sun).multiplyScalar(9);
+      key.target.position.set(0, 0, 0);
+      scene.add(key, key.target);
+      key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048);
+      Object.assign(key.shadow.camera, {
+        left: -4,
+        right: 4,
+        top: 4,
+        bottom: -4,
+        near: 0.2,
+        far: 18,
+      });
+      key.shadow.camera.updateProjectionMatrix();
+      key.shadow.normalBias = 0.012;
+      scene.add(key);
+
+      const lamp = new T.PointLight(0xffb875, 3, 3);
+      lamp.position.set(1.66, 1.78, -1.45);
+      scene.add(lamp);
+
+      // Volumetric Blind Light Shader Pass
+      const target = new T.WebGLRenderTarget(1, 1, {
+        minFilter: T.LinearFilter,
+        magFilter: T.LinearFilter,
+      });
+      target.depthTexture = new T.DepthTexture(1, 1, T.UnsignedIntType);
+      const post = new T.Scene(),
+        ortho = new T.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const uniforms = {
+        surface: { value: target.texture },
+        depthMap: { value: target.depthTexture },
+        invProjection: { value: camera.projectionMatrixInverse },
+        world: { value: camera.matrixWorld },
+        sun: { value: sun },
+        opening: { value: 0.59 },
+      };
+
+      const pass = new T.ShaderMaterial({
+        uniforms,
+        depthTest: false,
+        depthWrite: false,
+        vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`,
+        fragmentShader: `
+varying vec2 vUv;uniform sampler2D surface,depthMap;uniform mat4 invProjection,world;uniform vec3 sun;uniform float opening;
+float openingIntegral(float y,float spacing){
+ float q=y/spacing, f=fract(q), clearHalf=max(0.,.5-.039/spacing);
+ return spacing*(floor(q)*2.*clearHalf+min(f,clearHalf)+max(0.,f-(1.-clearHalf)));
+}
+void main(){
+ vec4 view=invProjection*vec4(vUv*2.-1.,texture2D(depthMap,vUv).r*2.-1.,1.);view/=view.w;
+ vec3 eye=world[3].xyz,toPixel=(world*vec4(view.xyz,1.)).xyz-eye;
+ float distanceToSurface=length(toPixel),ds=min(distanceToSurface,15.)/64.;vec3 dir=normalize(toPixel);
+ float trans=1.,light=0.,blindsStep=mix(.1375,.029,opening);
+ for(int i=0;i<64;i++){
+   vec3 p=eye+dir*(float(i)+.5)*ds;
+   if(p.x < -3.3||p.z < -3.8||p.z>2.8||p.y<0.||p.y>4.45)continue;
+   vec3 pane=p+sun*((-3.3-p.x)/sun.x);float y=3.8-pane.y;
+   float windowMask=step(0.,y)*step(y,2.75)*step(-3.1,pane.z)*step(pane.z,1.3)*smoothstep(.025,.055,abs(pane.z+.9));
+   float footprint=max(.003,.5*ds*abs(dir.y-dir.x*sun.y/sun.x));
+   float coverage=(openingIntegral(y+footprint,blindsStep)-openingIntegral(y-footprint,blindsStep))/(2.*footprint);
+   float blind=mix(1.,clamp(coverage,0.,1.),1.-smoothstep(20.*blindsStep-footprint,20.*blindsStep+footprint,y));
+   float portion=1.-exp(-.068*ds);
+   light+=trans*portion*windowMask*blind;trans*=1.-portion;
+ }
+ vec3 color=texture2D(surface,vUv).rgb*trans+vec3(1.,.74,.44)*light*1.26;
+ gl_FragColor=vec4(color,1.);
+ #include <colorspace_fragment>
+}`,
+      });
+      post.add(new T.Mesh(new T.PlaneGeometry(2, 2), pass));
+
+      function draw() {
+        const open = Number(slider.value) / 100;
+        uniforms.opening.value = open;
+        const step = 0.1375 + (0.029 - 0.1375) * open;
+        slats.forEach((m, i) => (m.position.y = 3.8 - (i + 0.5) * step));
+        const w = container.clientWidth,
+          h = container.clientHeight;
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        renderer.setSize(w, h, false);
+        target.setSize(canvas.width, canvas.height);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        camera.updateMatrixWorld();
+        renderer.setRenderTarget(target);
+        renderer.render(scene, camera);
+        renderer.setRenderTarget(null);
+        renderer.render(post, ortho);
+      }
+
+      slider.addEventListener("input", draw);
+      new ResizeObserver(draw).observe(container);
+      draw();
+
+      // Fullscreen toggle
+      const fullscreenBtn = document.getElementById("fullscreenBtn");
+      fullscreenBtn.addEventListener("click", () => {
+        if (!document.fullscreenElement) {
+          container.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+    </script>
+
+    <!-- NAVIGATION, DROPDOWN & TRANSLATION SCRIPT -->
+    <script>
+      const translations = {
+        en: {
+          nav_subtitle: "Music",
+          nav_bio: "Bio",
+          nav_music: "Music & EP",
+          nav_videos: "Videos",
+          nav_mystuff: "My Stuff",
+          nav_web_projects: "Web Projects",
+          nav_window_light: "Window Light Study",
+          nav_inspiration: "Inspiration",
+          nav_contact: "Contact",
+          study_tag: "Interactive 3D • WebGL",
+          study_heading: "Window Light Study",
+          study_desc:
+            "A real-time Three.js and GLSL raymarched light study of a quiet studio corner. Adjust the venetian blinds to watch afternoon light shift across the room.",
+          btn_back_home: "Back to Home",
+          slider_label: "Blind opening",
+          btn_fullscreen: "Fullscreen",
+          footer_rights: "All rights reserved.",
+        },
+        he: {
+          nav_subtitle: "מוזיקה",
+          nav_bio: "ביוגרפיה",
+          nav_music: "מוזיקה ו-EP",
+          nav_videos: "סרטונים",
+          nav_mystuff: "הדברים שלי",
+          nav_web_projects: "פרויקטים ברשת",
+          nav_window_light: "מחקר אור חלון",
+          nav_inspiration: "השראה",
+          nav_contact: "צור קשר",
+          study_tag: "תלת-ממד אינטראקטיבי • WebGL",
+          study_heading: "מחקר אור חלון",
+          study_desc:
+            "מחקר תאורה בזמן אמת ב-Three.js ו-GLSL של פינת סטודיו שקטה. הזיזו את התריסים כדי לראות כיצד אור אחר הצהריים משתנה בחדר.",
+          btn_back_home: "חזרה לדף הבית",
+          slider_label: "פתיחת תריסים",
+          btn_fullscreen: "מסך מלא",
+          footer_rights: "כל הזכויות שמורות.",
+        },
+        fr: {
+          nav_subtitle: "Musique",
+          nav_bio: "Bio",
+          nav_music: "Musique & EP",
+          nav_videos: "Vidéos",
+          nav_mystuff: "Mes Projets",
+          nav_web_projects: "Projets Web",
+          nav_window_light: "Étude de Lumière",
+          nav_inspiration: "Inspiration",
+          nav_contact: "Contact",
+          study_tag: "3D Interactif • WebGL",
+          study_heading: "Étude de Lumière",
+          study_desc:
+            "Une étude de lumière en temps réel avec Three.js et GLSL d'un coin studio paisible. Ajustez les stores vénitiens pour observer la lumière évoluer dans la pièce.",
+          btn_back_home: "Retour à l'accueil",
+          slider_label: "Ouverture des stores",
+          btn_fullscreen: "Plein écran",
+          footer_rights: "Tous droits réservés.",
+        },
+        de: {
+          nav_subtitle: "Musik",
+          nav_bio: "Bio",
+          nav_music: "Musik & EP",
+          nav_videos: "Videos",
+          nav_mystuff: "Meine Sachen",
+          nav_web_projects: "Webprojekte",
+          nav_window_light: "Fensterlicht-Studie",
+          nav_inspiration: "Inspiration",
+          nav_contact: "Kontakt",
+          study_tag: "Interaktives 3D • WebGL",
+          study_heading: "Fensterlicht-Studie",
+          study_desc:
+            "Eine Echtzeit-Lichtstudie in Three.js und GLSL einer ruhigen Studioecke. Verstelle die Jalousien, um das Nachmittagslicht im Raum wandern zu sehen.",
+          btn_back_home: "Zurück zur Startseite",
+          slider_label: "Jalousieöffnung",
+          btn_fullscreen: "Vollbild",
+          footer_rights: "Alle Rechte vorbehalten.",
+        },
+      };
+
+      const flags = { en: "🇬🇧", he: "🇮🇱", fr: "🇫🇷", de: "🇩🇪" };
+
+      function setLanguage(lang) {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (translations[lang] && translations[lang][key]) {
+            el.innerHTML = translations[lang][key];
+          }
+        });
+
+        document.getElementById("currentFlag").textContent = flags[lang];
+        document.getElementById("currentLangCode").textContent =
+          lang.toUpperCase();
+
+        if (lang === "he") {
+          document.documentElement.setAttribute("dir", "rtl");
+          document.documentElement.setAttribute("lang", "he");
+        } else {
+          document.documentElement.setAttribute("dir", "ltr");
+          document.documentElement.setAttribute("lang", lang);
+        }
+
+        localStorage.setItem("stewoak_lang", lang);
+      }
+
+      const dropdown = document.getElementById("langDropdown");
+      const btn = document.getElementById("langBtn");
+      const myStuffDropdown = document.getElementById("myStuffDropdown");
+      const myStuffBtn = document.getElementById("myStuffBtn");
+
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (myStuffDropdown) myStuffDropdown.classList.remove("open");
+        dropdown.classList.toggle("open");
+      });
+
+      if (myStuffBtn && myStuffDropdown) {
+        myStuffBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdown.classList.remove("open");
+          const isOpen = myStuffDropdown.classList.toggle("open");
+          myStuffBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+      }
+
+      document.querySelectorAll(".lang-option").forEach((option) => {
+        option.addEventListener("click", () => {
+          const lang = option.getAttribute("data-lang");
+          setLanguage(lang);
+          dropdown.classList.remove("open");
+        });
+      });
+
+      window.addEventListener("click", () => {
+        dropdown.classList.remove("open");
+        if (myStuffDropdown) {
+          myStuffDropdown.classList.remove("open");
+          if (myStuffBtn) myStuffBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      const savedLang = localStorage.getItem("stewoak_lang") || "en";
+      setLanguage(savedLang);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      });
+    </script>
+  </body>
+</html>
