@@ -882,3 +882,123 @@ body {
   right: auto;
   left: 0;
 }
+
+/* ==========================================================================
+   SUBPAGES (WEB PROJECTS & INSPIRATION)
+   ========================================================================== */
+.nav-dropdown-trigger.active,
+.footer-links a.active {
+  color: var(--color-moss-400);
+}
+
+.subpage-hero {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 72px 24px 32px;
+  text-align: center;
+}
+
+.subpage-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--color-sand-50);
+  margin-bottom: 16px;
+}
+
+.subpage-lead {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--color-sand-200);
+}
+
+.subpage-section {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 24px 24px 88px;
+}
+
+.editorial-card {
+  padding: 40px;
+}
+
+.editorial-paragraphs p {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--color-sand-200);
+  margin-bottom: 20px;
+}
+
+.editorial-paragraphs p:last-child {
+  margin-bottom: 0;
+}
+
+.inspiration-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.inspiration-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+  padding: 36px;
+}
+
+.inspiration-text p {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--color-sand-200);
+}
+
+.inline-image-placeholder {
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  border-radius: 16px;
+  background: var(--color-bg-900);
+  border: 1px dashed rgba(142, 179, 89, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-sand-300);
+}
+
+.inline-image-placeholder svg {
+  width: 28px;
+  height: 28px;
+  color: var(--color-moss-400);
+}
+
+.placeholder-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-sand-100);
+}
+
+.placeholder-dims {
+  font-size: 0.75rem;
+  color: rgba(217, 203, 176, 0.65);
+}
+
+@media (min-width: 900px) {
+  .inspiration-item {
+    grid-template-columns: 1fr 1fr;
+    gap: 44px;
+    padding: 44px;
+  }
+
+  .inspiration-item.reverse .inspiration-text {
+    order: 2;
+  }
+
+  .inspiration-item.reverse .inline-image-placeholder {
+    order: 1;
+  }
+}
