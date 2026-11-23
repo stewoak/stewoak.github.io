@@ -23,7 +23,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
-    <!-- p5.js for Algorithmic Background -->
+    <!-- p5.js for Sacred Geometry Mandala Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
     <style>
@@ -49,10 +49,39 @@
         position: relative;
         z-index: 1;
       }
+
+      .cloudinary-media-wrap {
+        float: right;
+        width: 44%;
+        max-width: 420px;
+        margin: 4px 0 18px 28px;
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--color-bg-900);
+        border: 1px solid rgba(142, 179, 89, 0.28);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+      }
+
+      .cloudinary-media-wrap video {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+      }
+
+      @media (max-width: 768px) {
+        .cloudinary-media-wrap {
+          float: none;
+          width: 100%;
+          max-width: 100%;
+          margin: 0 0 22px 0;
+        }
+      }
     </style>
   </head>
   <body>
-    <!-- FULL-WIDTH ALGORITHMIC SHAPES BACKGROUND -->
+    <!-- FULL-WIDTH SACRED GEOMETRY MANDALA BACKGROUND -->
     <div id="algorithmicBg" aria-hidden="true"></div>
 
     <!-- NAVIGATION BAR -->
@@ -172,6 +201,19 @@
             brands to help them get the most out of their visual media and
             digital asset workflows.
           </p>
+
+          <figure class="cloudinary-media-wrap">
+            <video
+              src="https://cloudinary-marketing-res.cloudinary.com/video/upload/f_auto:video,q_auto,so_0/v1790120161/hero-animation-2026-1200x900"
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="metadata"
+              aria-label="Cloudinary visual media workflow animation"
+            ></video>
+          </figure>
+
           <p>
             At its core,
             <a
@@ -262,200 +304,3 @@
             rel="noopener noreferrer"
             title="YouTube Music"
             ><i data-lucide="radio"></i
-          ></a>
-          <a
-            href="https://www.instagram.com/stewoak/?hl=en"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Instagram"
-            ><i data-lucide="instagram"></i
-          ></a>
-          <a
-            href="https://www.youtube.com/channel/UC8u5m2nX369WDcWCKt5KC6A"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="YouTube Channel"
-            ><i data-lucide="youtube"></i
-          ></a>
-          <a
-            href="https://soundcloud.com/stew-oak"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="SoundCloud"
-            ><i data-lucide="cloud-lightning"></i
-          ></a>
-        </div>
-        <p class="copyright">
-          &copy;
-          <script>
-            document.write(new Date().getFullYear());
-          </script>
-          Stew Oak. All rights reserved.
-        </p>
-      </div>
-    </footer>
-
-    <!-- ALGORITHMIC SHAPES BACKGROUND (P5.JS) -->
-    <script>
-      new p5((p) => {
-        const SEED = 1974;
-        const shapes = [];
-        const prefersReducedMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-        p.setup = () => {
-          const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-          canvas.parent("algorithmicBg");
-          p.randomSeed(SEED);
-          p.noiseSeed(SEED);
-          initShapes();
-          if (prefersReducedMotion) {
-            p.noLoop();
-          }
-        };
-
-        function initShapes() {
-          shapes.length = 0;
-          const count = Math.min(48, Math.max(22, Math.floor(p.width / 32)));
-          const kinds = ["circle", "ring", "polygon", "arc"];
-          const sidesOptions = [3, 4, 5, 6];
-
-          for (let i = 0; i < count; i++) {
-            shapes.push({
-              x: p.random(p.width),
-              y: p.random(p.height),
-              size: p.random(18, 92),
-              angle: p.random(p.TWO_PI),
-              spin: p.random(-0.003, 0.003),
-              speed: p.random(0.18, 0.45),
-              noiseOffset: p.random(1000),
-              kind: kinds[Math.floor(p.random(kinds.length))],
-              sides:
-                sidesOptions[Math.floor(p.random(sidesOptions.length))],
-              tone: p.random() < 0.7 ? "moss" : "sand",
-              alpha: p.random(22, 58),
-            });
-          }
-        }
-
-        function drawPolygon(x, y, radius, sides) {
-          p.beginShape();
-          for (let i = 0; i < sides; i++) {
-            const a = (p.TWO_PI / sides) * i;
-            p.vertex(x + Math.cos(a) * radius, y + Math.sin(a) * radius);
-          }
-          p.endShape(p.CLOSE);
-        }
-
-        p.draw = () => {
-          p.background(11, 20, 13);
-
-          const t = p.frameCount * 0.0018;
-
-          // Subtle connecting harmonic lines between nearby shapes
-          for (let i = 0; i < shapes.length; i++) {
-            for (let j = i + 1; j < shapes.length; j++) {
-              const d = p.dist(
-                shapes[i].x,
-                shapes[i].y,
-                shapes[j].x,
-                shapes[j].y
-              );
-              if (d < 175) {
-                const lineAlpha = p.map(d, 0, 175, 26, 0);
-                p.stroke(142, 179, 89, lineAlpha);
-                p.strokeWeight(0.8);
-                p.line(shapes[i].x, shapes[i].y, shapes[j].x, shapes[j].y);
-              }
-            }
-          }
-
-          // Algorithmic drifting geometric shapes
-          for (const s of shapes) {
-            if (!prefersReducedMotion) {
-              const flowAngle =
-                p.noise(s.x * 0.0022, s.y * 0.0022, t + s.noiseOffset) *
-                p.TWO_PI *
-                2;
-              s.x += Math.cos(flowAngle) * s.speed;
-              s.y += Math.sin(flowAngle) * s.speed;
-              s.angle += s.spin;
-
-              const pad = s.size;
-              if (s.x < -pad) s.x = p.width + pad;
-              if (s.x > p.width + pad) s.x = -pad;
-              if (s.y < -pad) s.y = p.height + pad;
-              if (s.y > p.height + pad) s.y = -pad;
-            }
-
-            p.push();
-            p.translate(s.x, s.y);
-            p.rotate(s.angle);
-
-            if (s.tone === "moss") {
-              p.stroke(142, 179, 89, s.alpha);
-              p.fill(142, 179, 89, s.alpha * 0.16);
-            } else {
-              p.stroke(232, 222, 201, s.alpha * 0.8);
-              p.fill(232, 222, 201, s.alpha * 0.1);
-            }
-            p.strokeWeight(1);
-
-            if (s.kind === "circle") {
-              p.circle(0, 0, s.size);
-            } else if (s.kind === "ring") {
-              p.noFill();
-              p.circle(0, 0, s.size);
-              p.circle(0, 0, s.size * 0.55);
-            } else if (s.kind === "polygon") {
-              drawPolygon(0, 0, s.size * 0.5, s.sides);
-            } else if (s.kind === "arc") {
-              p.noFill();
-              p.arc(0, 0, s.size, s.size, 0, p.PI * 1.35);
-            }
-
-            p.pop();
-          }
-        };
-
-        p.windowResized = () => {
-          p.resizeCanvas(p.windowWidth, p.windowHeight);
-          p.randomSeed(SEED);
-          p.noiseSeed(SEED);
-          initShapes();
-          if (prefersReducedMotion) {
-            p.redraw();
-          }
-        };
-      });
-    </script>
-
-    <!-- NAVIGATION & ICON SCRIPT -->
-    <script>
-      const myStuffDropdown = document.getElementById("myStuffDropdown");
-      const myStuffBtn = document.getElementById("myStuffBtn");
-
-      if (myStuffBtn && myStuffDropdown) {
-        myStuffBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const isOpen = myStuffDropdown.classList.toggle("open");
-          myStuffBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-        });
-      }
-
-      window.addEventListener("click", () => {
-        if (myStuffDropdown) {
-          myStuffDropdown.classList.remove("open");
-          if (myStuffBtn) myStuffBtn.setAttribute("aria-expanded", "false");
-        }
-      });
-
-      document.addEventListener("DOMContentLoaded", function () {
-        if (window.lucide) {
-          lucide.createIcons();
-        }
-      });
-    </script>
-  </body>
-</html>
