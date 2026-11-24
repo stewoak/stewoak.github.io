@@ -22,6 +22,55 @@
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+    <!-- Scoped styles for featured inspiration entries -->
+    <style>
+      .inspiration-item.featured-entry {
+        align-items: start;
+      }
+
+      .inspiration-item.featured-entry .inspiration-eyebrow {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.75;
+        margin-bottom: 0.35rem;
+      }
+
+      .inspiration-item.featured-entry .inspiration-heading {
+        font-size: clamp(1.5rem, 2.6vw, 2rem);
+        line-height: 1.25;
+        margin-bottom: 1.25rem;
+      }
+
+      .inspiration-item.featured-entry .inspiration-text p + p {
+        margin-top: 1.1rem;
+      }
+
+      .inspiration-media {
+        margin: 0;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .inspiration-media img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        object-fit: cover;
+      }
+
+      .inspiration-media figcaption {
+        font-size: 0.85rem;
+        opacity: 0.75;
+        margin-top: 0.65rem;
+        font-style: italic;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <!-- NAVIGATION BAR -->
@@ -120,37 +169,101 @@
         >
         <h1 class="font-serif subpage-title">Inspiration</h1>
         <p class="subpage-lead">
-          Layout preview — placeholder copy and inline image slots ready for
-          your notes and visuals.
+          The artists, albums, and stories that shaped how I pick up a guitar,
+          write songs, and keep the music honest.
         </p>
       </section>
 
       <!-- MAIN CONTENT -->
       <section class="subpage-section">
         <div class="inspiration-list">
-          <!-- Paragraph 1 + Inline Image Placeholder -->
-          <article class="glass-card inspiration-item">
+          <!-- Feature 1: Jack Johnson -->
+          <article
+            class="glass-card inspiration-item featured-entry"
+            id="jack-johnson"
+          >
             <div class="inspiration-text">
+              <span class="inspiration-eyebrow">01 &bull; Musical Compass</span>
+              <h2 class="font-serif inspiration-heading">
+                Jack Johnson: Surf, Story, and Staying Grounded
+              </h2>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur.
+                I had a guitar in my hands from a young age, and being the exact
+                same age as Jack Johnson, I grew up alongside the same nineties
+                musical landscape he did. Yet through my twenties, between
+                juggling sports, socializing, and settling into steady office
+                jobs, my guitar mostly stayed in the background. I loved music
+                and was always the first to sing along while my brother and
+                friends worked out the latest Oasis tracks, but I never quite
+                got around to honing my own technique.
+              </p>
+              <p>
+                That changed in the early 2000s when I first heard Jack—and
+                suddenly, singing along wasn't enough. I needed to figure out
+                how to play like that myself.
+              </p>
+              <p>
+                What pulled me in wasn’t the typical rock-star ambition of
+                chasing the biggest stage or the loudest production; it was the
+                exact opposite. Growing up on Oahu’s North Shore, Jack’s first
+                love was the ocean and the lens. In the late nineties, he was
+                hauling 16mm cameras to remote corners of the globe—places like
+                Port Blair in the Andaman Islands—to film raw, soulful surf
+                journeys for <em>Thicker Than Water</em> and
+                <em>The September Sessions</em>. The songs came later, almost by
+                accident, written in the quiet spaces between swells and around
+                beach fires with friends.
+              </p>
+              <p>
+                By the time I finally committed to my playing in my thirties,
+                Jack’s stripped-back, Hawaiian-inflected style had become my
+                benchmark. I still fondly remember buying a travel guitar
+                during my honeymoon in India and spending hours working out the
+                percussive slapping rhythm on &ldquo;Flake&rdquo; and the rolling
+                fingerpicking behind &ldquo;Traffic in the Sky.&rdquo; That
+                unhurried sensibility—where space, warmth, and groove matter
+                infinitely more than flash—completely shaped how I write and
+                record today. Whenever I’m working on a track in my home studio,
+                Jack is the voice reminding me not to over-produce the soul out
+                of it. If a song doesn't hold up with just an acoustic guitar
+                and an honest vocal, no amount of studio trickery is going to
+                save it.
+              </p>
+              <p>
+                Just as influential is how he approaches collaboration and
+                community. Jack built his career around a tight circle of
+                friends, surfers, and musicians—turning Brushfire Records and
+                his solar-powered Mango Tree Studio in Hawaii into an extension
+                of his home life rather than a corporate machine. That ethos
+                sits right at the heart of how I make music. For me, songwriting
+                has never been about shooting for the stars or chasing commercial
+                validation; it’s about connection, trading ideas with friends,
+                and capturing a moment that feels true to where you are in life.
+              </p>
+              <p>
+                Beyond the fretboard, there is a quiet integrity to how he
+                carries himself in the world. Keeping his family firmly at the
+                center of a life on the road, and channeling his platform into
+                genuine environmental stewardship through the Kokua Hawaii
+                Foundation, he proved that you don’t have to compromise your
+                values—or your sense of home—to make meaningful art.
+              </p>
+              <p>
+                In a noisy world that constantly pushes you to scale up and
+                reach higher, Jack Johnson remains my favorite reminder to stay
+                grounded, keep the circle close, and let the music breathe.
               </p>
             </div>
-            <div
-              class="inline-image-placeholder"
-              role="img"
-              aria-label="Image placeholder 1"
-            >
-              <i data-lucide="image"></i>
-              <span class="placeholder-label">Image Placeholder 1</span>
-              <span class="placeholder-dims"
-                >Replace with &lt;img src="..."&gt; (16:10)</span
-              >
-            </div>
+            <figure class="inspiration-media">
+              <img
+                src="jack-johnson-ai-watercolor1.jpg"
+                alt="Watercolor portrait of Jack Johnson sitting barefoot on grass by the ocean holding an acoustic guitar"
+                loading="lazy"
+              />
+              <figcaption>
+                Unhurried tone, coastal roots, and songs built to breathe.
+              </figcaption>
+            </figure>
           </article>
 
           <!-- Paragraph 2 + Inline Image Placeholder -->
@@ -334,3 +447,6 @@
     </script>
   </body>
 </html>
+```[cite: 1, 2]
+
+Whenever you're ready to tackle the Oasis section (or the third and fourth slots), let me know what memories or angles you want to highlight and we can slot them into the remaining `inspiration-item` cards.
